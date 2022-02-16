@@ -1,5 +1,4 @@
-use pokerust::Type;
-use pokerust::{FromName, Pokemon};
+use pokerust::{Type, FromName, Pokemon};
 use structopt::StructOpt;
 
 const NO_DAMAGE: f64 = 0.0;
