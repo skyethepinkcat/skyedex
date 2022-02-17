@@ -1,8 +1,17 @@
-use pokerust::{Type, FromName, Pokemon};
+use pokerust::{Type, FromName, Pokemon, Nature};
 const NO_DAMAGE: f64 = 0.0;
 const HALF_DAMAGE: f64 = 0.5;
 const NORMAL_DAMAGE: f64 = 1.0;
 const DOUBLE_DAMAGE: f64 = 2.0;
+
+// Obtain a Pokemon using an api request, given it's name.
+pub fn get_pokemon(name: String) -> Result<pokerust::Pokemon, String> {
+    let out = Pokemon::from_name(&name.to_lowercase());
+    match out {
+        Ok(p) => Ok(p),
+        Err(_) => Err("Couldn't find the Pokemon!".to_string()),
+    }
+}
 
 // Obtain a type using an api request, given it's name.
 pub fn get_type(name: &String) -> Result<pokerust::Type, String> {
@@ -13,6 +22,33 @@ pub fn get_type(name: &String) -> Result<pokerust::Type, String> {
     }
 }
 
+// Obtain a type using an api request, given it's name.
+pub fn get_nature(name: &String) -> Result<pokerust::Nature, String> {
+    let t = Nature::from_name(&name.to_lowercase());
+    match t {
+        Ok(t) => Ok(t),
+        Err(_) => Err("Couldn't find the Nature!".to_string()),
+    }
+}
+
+pub fn get_nature_details(nature :&Nature) -> [String; 2] {
+    let mut stat_names :[String;2] = [
+        String::from(""),
+        String::from(""),
+    ];
+    stat_names[0] = match &nature.decreased_stat {
+        None =>  "None".to_string(),
+        Some(n) => n.get().unwrap().name
+
+    };
+
+    stat_names[1] = match &nature.increased_stat {
+        None =>  "None".to_string(),
+        Some(n) => n.get().unwrap().name
+
+    };
+    return stat_names;
+}
 // Obtain the names of a pokemon's types in a vector.
 pub fn get_pokemon_type_names(p: &Pokemon) -> Result<Vec<String>, String> {
     let mut out: Vec<String> = vec![];

@@ -1,4 +1,3 @@
-use pokerust::{ FromName, Pokemon};
 use structopt::StructOpt;
 mod util;
 pub use util::*;
@@ -55,6 +54,12 @@ enum Opt {
         #[structopt(required_if("against", "true"), default_value = "null")]
         secondary: String,
     },
+    /// Lookup Information about a Nature!
+    #[structopt(name = "nature")]
+    Nature {
+        /// Name of the Nature to lookup
+        name: String,
+    }
 }
 
 fn main() -> Result<(), String> {
@@ -181,15 +186,14 @@ fn main() -> Result<(), String> {
                 }
             }
         }
+        Opt::Nature {
+            name,
+        } => {
+            let n = get_nature(&name)?;
+            let stat_strings = get_nature_details(&n);
+            println!("-{}, +{}", stat_strings[0], stat_strings[1]);
+        }
     }
     Ok(())
 }
 
-// Obtain a Pokemon using an api request, given it's name.
-fn get_pokemon(name: String) -> Result<pokerust::Pokemon, String> {
-    let out = Pokemon::from_name(&name.to_lowercase());
-    match out {
-        Ok(p) => Ok(p),
-        Err(_) => Err("Couldn't find the Pokemon!".to_string()),
-    }
-}
